@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lottery Contract</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+</head>
+<body>
+    <h1>Lottery Contract</h1>
+    <button onclick="connectMetamask()">Connect MetaMask</button>
+    <button onclick="enterLottery()">Enter Lottery</button>
+    <button onclick="pickWinner()">Pick Winner</button>
+    <button onclick="claimPrize()">Claim Prize</button>
+    <script>
+        // Replace with your contract's ABI
+        const abi = [
+            {
+                "inputs": [],
+                "name": "claimPrize",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "enter",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "pickWinner",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "inputs": [],
+                "name": "claimed",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getManager",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getPlayers",
+                "outputs": [
+                    {
+                        "internalType": "address payable[]",
+                        "name": "",
+                        "type": "address[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getWinner",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "isComplete",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "manager",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "players",
+                "outputs": [
+                    {
+                        "internalType": "address payable",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "status",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        // Replace with your contract address
+        const contractAddress = '0xd9145CCE52D386f254917e481eB44e9943F39138';
+
+        // Initialize web3
+        let web3;
+        let contract;
+        let userAccount;
+
+        async function connectMetamask() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    // Request account access
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const accounts = await web3.eth.getAccounts();
+                    userAccount = accounts[0];
+                    contract = new web3.eth.Contract(abi, contractAddress);
+                    alert('MetaMask connected');
+                } catch (error) {
+                    console.error("User denied account access or error occurred", error);
+                }
+            } else {
+                alert('Please install MetaMask!');
+            }
+        }
+
+        async function enterLottery() {
+            if (!userAccount) {
+                alert('Please connect to MetaMask first.');
+                return;
+            }
+            await contract.methods.enter().send({ from: userAccount, value: web3.utils.toWei('0.001', 'ether') });
+            alert('Entered the lottery!');
+        }
+
+        async function pickWinner() {
+            if (!userAccount) {
+                alert('Please connect to MetaMask first.');
+                return;
+            }
+            await contract.methods.pickWinner().send({ from: userAccount });
+            alert('Winner has been picked!');
+        }
+
+        async function claimPrize() {
+            if (!userAccount) {
+                alert('Please connect to MetaMask first.');
+                return;
+            }
+            await contract.methods.claimPrize().send({ from: userAccount });
+            alert('Prize claimed!');
+        }
+    </script>
+</body>
+</html>
+	
